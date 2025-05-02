@@ -1,0 +1,13 @@
+[project]
+name = "audio-pomodoro"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "asyncio>=3.4.3",
+    "dotenv>=0.9.9",
+    "instructor>=1.7.9",
+    "openai>=1.76.2",
+    "pyttsx3>=2.98",
+]
