@@ -38,7 +38,13 @@ class PomodoroApp:
         print(f"Starting work session for: {task}")
         self.audio.speak(f"ATTENTION! Starting 25-minute focus session for: {task}")
         print("Starting 25-minute timer...")
-        await asyncio.sleep(25 * 60)  # 25 minutes
+        
+        # Break 25 minutes into 5-minute intervals
+        for i in range(5):
+            await asyncio.sleep(5 * 60)  # 5 minutes
+            if i < 4:  # Don't remind on the last interval
+                self.audio.speak(f"REMINDER! You're working on: {task}")
+                
         self.audio.speak("TIME'S UP! Take a 5-minute break!")
         
     async def break_session(self):
@@ -53,8 +59,8 @@ class PomodoroApp:
             model="gpt-3.5-turbo",
             response_model=TaskBreakdown,
             messages=[
-                {"role": "system", "content": "You are a task breakdown expert. Break down tasks into specific, actionable subtasks."},
-                {"role": "user", "content": f"Break down this task into 4-6 specific subtasks: {main_task}"}
+                {"role": "system", "content": "You are a task breakdown expert. Break down tasks into specific, actionable subtasks that can be completed in 3 or fewer pomodoro sessions (75 minutes total)."},
+                {"role": "user", "content": f"Break down this task into 2-3 specific subtasks: {main_task}"}
             ]
         )
         return breakdown.tasks
@@ -63,9 +69,30 @@ class PomodoroApp:
         main_task = input("Enter your main task: ")
         tasks = self.generate_tasks(main_task)
         
-        print("\nGenerated subtasks:")
-        for i, task in enumerate(tasks, 1):
-            print(f"{i}. {task}")
+        while True:
+            print("\nGenerated subtasks:")
+            for i, task in enumerate(tasks, 1):
+                print(f"{i}. {task}")
+            
+            print("\nOptions:")
+            print("1. Start Pomodoro sessions")
+            print("2. Edit a task")
+            print("3. Regenerate tasks")
+            choice = input("\nEnter your choice (1-3): ")
+            
+            if choice == "1":
+                break
+            elif choice == "2":
+                task_num = int(input("Enter task number to edit: ")) - 1
+                if 0 <= task_num < len(tasks):
+                    new_task = input(f"Edit task {task_num + 1}: ")
+                    tasks[task_num] = new_task
+                else:
+                    print("Invalid task number!")
+            elif choice == "3":
+                tasks = self.generate_tasks(main_task)
+            else:
+                print("Invalid choice!")
             
         print("\nStarting Pomodoro sessions...")
         for task in tasks:
