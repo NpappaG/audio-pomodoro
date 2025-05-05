@@ -59,7 +59,7 @@ class PomodoroApp:
             model="gpt-3.5-turbo",
             response_model=TaskBreakdown,
             messages=[
-                {"role": "system", "content": "You are a task breakdown expert. Break down tasks into specific, actionable subtasks that can be completed in 3 or fewer pomodoro sessions (75 minutes total)."},
+                {"role": "system", "content": "You are a task breakdown expert.. Break down tasks into specific, actionable subtasks that can be completed in 3 or fewer pomodoro sessions (75 minutes total)."},
                 {"role": "user", "content": f"Break down this task into 2-3 specific subtasks: {main_task}"}
             ]
         )
